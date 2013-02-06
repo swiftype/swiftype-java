@@ -70,7 +70,6 @@ public class Client {
 		} catch (FileNotFoundException e) {
 			return new Response(404, "");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -110,11 +109,11 @@ public class Client {
 					sb.append("\n");
 				}
 			}
+
 			return new Response(status, sb.toString());
 		} catch (FileNotFoundException e) {
 			return new Response(404, "");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
