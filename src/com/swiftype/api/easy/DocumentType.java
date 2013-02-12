@@ -60,7 +60,7 @@ public class DocumentType {
 	 */
 	public SearchResult search(final String query) {
 		checkDestroyed();
-		return api.search(slug, query).get(slug);
+		return api.search(slug, query);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class DocumentType {
 	 */
 	public SearchResult search(final String query, final SearchOptions options) {
 		checkDestroyed();
-		return api.search(slug, query, options).get(slug);
+		return api.search(slug, query, options);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class DocumentType {
 	 */
 	public SuggestResult suggest(final String query) {
 		checkDestroyed();
-		return api.suggest(slug, query).get(slug);
+		return api.suggest(slug, query);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class DocumentType {
 	 */
 	public SuggestResult suggest(final String query, final SearchOptions options) {
 		checkDestroyed();
-		return api.suggest(slug, query, options).get(slug);
+		return api.suggest(slug, query, options);
 	}
 
 	/**

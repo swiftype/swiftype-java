@@ -3,13 +3,9 @@ package com.swiftype.api.easy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.swiftype.api.easy.DocumentType;
-import com.swiftype.api.easy.DocumentTypesApi;
 import com.swiftype.api.easy.helper.SearchOptions;
 import com.swiftype.api.easy.helper.SearchResult;
 import com.swiftype.api.easy.helper.SuggestResult;
@@ -57,40 +53,28 @@ public class DocumentTypesApiTest {
 
 	@Test
 	public void testSearch() {
-		final Map<String, SearchResult> results = api.search(DOCUMENT_TYPE_ID, "query");
-		for (final SearchResult documentTypeResult : results.values()) {
-			assertEquals(1, documentTypeResult.getInfo().page);
-		}
-		assertEquals(1, results.size());
+		final SearchResult results = api.search(DOCUMENT_TYPE_ID, "query");
+		assertEquals(1, results.getInfo().page);
 	}
 
 	@Test
 	public void testSearchWithOptions() {
 		final int page = 2;
 		final SearchOptions options = new SearchOptions.Builder().page(page).build();
-		final Map<String, SearchResult> results = api.search(DOCUMENT_TYPE_ID, "query", options);
-		for (final SearchResult documentTypeResult : results.values()) {
-			assertEquals(page, documentTypeResult.getInfo().page);
-		}
-		assertEquals(1, results.size());
+		final SearchResult results = api.search(DOCUMENT_TYPE_ID, "query", options);
+		assertEquals(page, results.getInfo().page);
 	}
 
 	@Test
 	public void testSuggest() {
-		final Map<String, SuggestResult> results = api.suggest(DOCUMENT_TYPE_ID, "query");
-		for (final SuggestResult documentTypeResult : results.values()) {
-			assertEquals(1, documentTypeResult.getResults().size());
-		}
-		assertEquals(1, results.size());
+		final SuggestResult results = api.suggest(DOCUMENT_TYPE_ID, "query");
+		assertEquals(1, results.getResults().size());
 	}
 
 	@Test
 	public void testSuggestWithOptions() {
 		final SearchOptions options = new SearchOptions.Builder().page(2).build();
-		final Map<String, SuggestResult> results = api.suggest(DOCUMENT_TYPE_ID, "query", options);
-		for (final SuggestResult documentTypeResult : results.values()) {
-			assertEquals(1, documentTypeResult.getResults().size());
-		}
-		assertEquals(1, results.size());
+		final SuggestResult results = api.suggest(DOCUMENT_TYPE_ID, "query", options);
+		assertEquals(1, results.getResults().size());
 	}
 }

@@ -63,9 +63,9 @@ public class DocumentTypesApi {
 	/**
 	 * @param documentTypeId	DocumentType slug or id
 	 * @param query				Query terms to search for
-	 * @return					Search results per DocumentType
+	 * @return					Search results
 	 */
-	public Map<String, SearchResult> search(final String documentTypeId, final String query) {
+	public SearchResult search(final String documentTypeId, final String query) {
 		return search(documentTypeId, query, SearchOptions.DEFAULT);
 	}
 
@@ -74,19 +74,19 @@ public class DocumentTypesApi {
 	 * @param documentTypeId	DocumentType slug or id
 	 * @param query				Query terms to search for
 	 * @param options			Options for the search, for detail take a look at our @see <a href="https://swiftype.com/documentation/searching">Searching Documentation</a>
-	 * @return					Search results per DocumentType
+	 * @return					Search results
 	 */
-	public Map<String, SearchResult> search(final String documentTypeId, final String query, final SearchOptions options) {
+	public SearchResult search(final String documentTypeId, final String query, final SearchOptions options) {
 		final Response response = Client.post(documentTypePath(documentTypeId) + "/search", options.withQuery(query));
-		return toSearchResults(response);
+		return toSearchResults(response).get(documentTypeId);
 	}
 
 	/**
 	 * @param documentTypeId	DocumentType slug or id
 	 * @param query				Query for the suggestions
-	 * @return					Suggest results per DocumentType
+	 * @return					Suggest results
 	 */
-	public Map<String, SuggestResult> suggest(final String documentTypeId, final String query) {
+	public SuggestResult suggest(final String documentTypeId, final String query) {
 		return suggest(documentTypeId, query, SearchOptions.DEFAULT);
 	}
 
@@ -94,11 +94,11 @@ public class DocumentTypesApi {
 	 * @param documentTypeId	DocumentType slug or id
 	 * @param query				Query for the suggestions
 	 * @param options			Options for the suggest, for details take a look at our @see <a href="https://swiftype.com/documentation/autocomplete">Autocomplete Documentation</a>
-	 * @return					Suggest results per DocumentType
+	 * @return					Suggest results
 	 */
-	public Map<String, SuggestResult> suggest(final String documentTypeId, final String query, final SearchOptions options) {
+	public SuggestResult suggest(final String documentTypeId, final String query, final SearchOptions options) {
 		final Response response = Client.post(documentTypePath(documentTypeId) + "/suggest", options.withQuery(query));
-		return toSuggestResults(response);
+		return toSuggestResults(response).get(documentTypeId);
 	}
 
 	String documentTypesPath() {
