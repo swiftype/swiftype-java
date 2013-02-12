@@ -18,13 +18,65 @@ To limit the search to only the `books` DocumentType:
 	final DocumentTypesApi documentTypesApi = new DocumentTypesApi("bookstore");
 	final SearchResult results = documentTypesApi.search("books", "action");
 
-Both search methods allow you to specify options as an extra parameter to e.g. filter or sort on fields. For more details on these options pelease have a look at the [Search Options](https://swiftype.com/documentation/searching). Here is an example for showing only books that are in stock:
+Both search methods allow you to specify options as an extra parameter to e.g. filter or sort on fields. For more details on these options pelease have a look at the [Search Options](https://swiftype.com/documentation/searching) and the next section on Options. Here is an example for showing only books that are in stock:
 
-	final Map<String, String> conditions = new HashMap<String, String>();
-	conditions.put("in_stock", true);
-	final SearchOptions options = new SearchOptions.Builder().filters("books", conditions).build();
+	final SearchOptions options = new SearchOptions.Builder().filters("books", "in_stock", "true").build();
 	final EnginesApi enginesApi = new EnginesApi();
 	final Map<String, SearchResult> results =  enginesApi.search("bookstore", "action", options);
+
+## Options
+
+Create a options builder:
+
+	final SearchOptions.Builder optionsBuilder = new SearchOptions.Builder();
+
+After adding all the options you want, you can build a SearchOptions object with:
+
+	final SearchOptions options = optionsBuilder.build();
+
+Get only the `author` and `title` fields on a search or autocomplete:
+
+	optionsBuilder.fetchFields("books", "author", "title");
+
+To search only for `author`:
+
+	optionsBuilder.searchFields("books", "author");
+
+To boost search search only `author` and `title`:
+
+	optionsBuilder.searchFields("books", "author^2", "title^4");
+
+To show only `books` that are `in_stock`:
+
+	optionsBuilder.filter("books", "in_stock", "true");
+
+To search or autocomplete just for `books` and `movies`:
+
+	optionsBuilder.documentTypes("books", "movies");
+
+To rank results higher for higher `popularity` values:
+
+	optionsBuilder.functionalBoosts("books", "popularity", SearchOptions.FunctionalBoost.LOGARITHMIC);
+
+To show the second page of a search result:
+
+	optionsBuilder.page(2);
+
+To sort the results based on `title`:
+
+	optionsBuilder.sortField("books", "title");
+
+To sort in descending order:
+
+	optionsBuilder.sortField("books", "title", SearchOptions.Direction.DESC);
+
+To change the sort direction for the search field which defaults to `_score`:
+
+	optionsBuilder.sortDirection("books", SearchOptions.Direction.ASC);
+
+To count the available `genre`s:
+
+	optionsBuilder.facets("books", "genre")
 
 # Autocomplete
 
