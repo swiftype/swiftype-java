@@ -57,7 +57,6 @@ public class AnalyticsApi {
 		return toDateCountList(Client.get(analyticsPath + "/autoselects", queryRange(from, to)));
 	}
 
-
 	/**
 	 * @return		List of top queries with counts
 	 */
