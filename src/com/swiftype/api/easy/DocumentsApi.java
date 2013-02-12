@@ -66,7 +66,7 @@ public class DocumentsApi {
 	 * @param documents		Array of JSONObjects. For an example of a JSON Document see {@link #create(JSONObject) create}.
 	 * @return				Array of success stati for creating the individual documents
 	 */
-	public boolean[] create(final JSONObject[] documents) {
+	public boolean[] create(final JSONObject ... documents) {
 		return toBooleans(Client.post(documentsPath() + "/bulk_create", "{\"documents\": " + Arrays.toString(documents) + " }"));
 	}
 
@@ -82,7 +82,7 @@ public class DocumentsApi {
 	 * @param documents		Array of Documents. For details on the Document JSON see {@link #create(JSONObject) create}.
 	 * @return				Success stati for creating or updating the specified documents
 	 */
-	public boolean[] createOrUpdate(final JSONObject[] documents) {
+	public boolean[] createOrUpdate(final JSONObject ... documents) {
 		return toBooleans(Client.post(documentsPath() + "/bulk_create_or_update", "{\"documents\": " + Arrays.toString(documents) + " }"));
 	}
 
