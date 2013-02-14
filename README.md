@@ -392,3 +392,22 @@ To see more top queries you can paginate through them using:
 
 	final AnalyticsApi analyticsApi = new AnalyticsApi("youtube");
 	final List<QueryCount> topQueries = analyticsApi.topQueries(2, 10);
+
+Or you can get the top queries in a specific date range:
+
+	final AnalyticsApi analyticsApi = new AnalyticsApi("youtube");
+	final Date from = ...
+	final Date to = ...
+	final List<QueryCount> topQueries = analyticsApi.topQueries(from, to);
+
+If you want to improve you search results, you should always have a look at search queries, that return no results and perhaps add some `Document`s that match for this query or use our pining feature to add `Document`s for this query:
+
+	final AnalyticsApi analyticsApi = new AnalyticsApi("youtube");
+	final List<QueryCount> topNoResultQueries = analyticsApi.topNoResultQueries();
+
+You can also specifiy a date range for no result queries:
+
+	final AnalyticsApi analyticsApi = new AnalyticsApi("youtube");
+	final Date from = ...
+	final Date to = ...
+	final List<QueryCount> topNoResultQueries = analyticsApi.topNoResultQueries(from, to);
