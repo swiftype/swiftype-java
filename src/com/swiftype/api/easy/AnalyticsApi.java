@@ -42,6 +42,19 @@ public class AnalyticsApi {
 	}
 
 	/**
+	 * @param from	First day as "yyyy-MM-dd"
+	 * @param to	Last day as "yyyy-MM-dd"
+	 * @return		List of searches per day
+	 */
+	public List<DateCount> searches(final String from, final String to) {
+		try {
+			return searches(DATE_FORMATER.parse(from), DATE_FORMATER.parse(to));
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
+	}
+
+	/**
 	 * @return		List of clicks on autocomplete results per day
 	 */
 	public List<DateCount> autoselects() {
@@ -58,10 +71,23 @@ public class AnalyticsApi {
 	}
 
 	/**
+	 * @param from 	First day as "yyyy-MM-dd"
+	 * @param to	Last day as "yyyy-MM-dd"
+	 * @return		List of clicks on autocomplete results per day
+	 */
+	public List<DateCount> autoselects(final String from, final String to) {
+		try {
+			return autoselects(DATE_FORMATER.parse(from), DATE_FORMATER.parse(to));
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
+	}
+
+	/**
 	 * @return		List of top queries with counts
 	 */
 	public List<QueryCount> topQueries() {
-		return toQueryCountList(Client.get(analyticsPath + "/top_queries"));
+			return toQueryCountList(Client.get(analyticsPath + "/top_queries"));
 	}
 
 	/**
@@ -73,6 +99,57 @@ public class AnalyticsApi {
 		final String[] pageParam = {"page", Integer.toString(page)};
 		final String[] perPageParam = {"per_page", Integer.toString(perPage)};
 		return toQueryCountList(Client.get(analyticsPath + "/top_queries", pageParam, perPageParam));
+	}
+
+	/**
+	 * @param from		Start day
+	 * @param to		Last day
+	 * @return			Top 10 queries between start and last day
+	 */
+	public List<QueryCount> topQueries(final Date from, final Date to) {
+		return toQueryCountList(Client.get(analyticsPath + "/top_queries_in_range", queryRange(from, to)));
+	}
+
+	/**
+	 * @param from		Start day as "yyyy-MM-dd"
+	 * @param to		Last day as "yyyy-MM-dd"
+	 * @return			Top 10 queries between start and last day
+	 */
+	public List<QueryCount> topQueries(final String from, final String to) {
+		try {
+			return topQueries(DATE_FORMATER.parse(from), DATE_FORMATER.parse(to));
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
+	}
+
+	/**
+	 * @return		Top queries with no results in the last 14 days
+	 */
+	public List<QueryCount> topNoResultQueries() {
+		return toQueryCountList(Client.get(analyticsPath + "/top_no_result_queries_in_range"));
+	}
+
+	/**
+	 * @param from		Start day
+	 * @param to		Last day
+	 * @return			Top queries with no result between start and last day
+	 */
+	public List<QueryCount> topNoResultQueries(final Date from, final Date to) {
+		return toQueryCountList(Client.get(analyticsPath + "/top_no_result_queries_in_range", queryRange(from, to)));
+	}
+
+	/**
+	 * @param from		Start day as "yyyy-MM-dd"
+	 * @param to		Last day as "yyyy-MM-dd"
+	 * @return			Top queries with no result between start and last day
+	 */
+	public List<QueryCount> topNoResultQueries(final String from, final String to) {
+		try {
+			return topNoResultQueries(DATE_FORMATER.parse(from), DATE_FORMATER.parse(to));
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
 	}
 
 	private String[][] queryRange(final Date from, final Date to) {

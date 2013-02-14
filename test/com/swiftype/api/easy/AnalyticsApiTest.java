@@ -8,7 +8,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.swiftype.api.easy.AnalyticsApi;
 import com.swiftype.api.easy.AnalyticsApi.DateCount;
 import com.swiftype.api.easy.AnalyticsApi.QueryCount;
 import com.swiftype.api.easy.helper.SwiftypeConfig;
@@ -56,6 +55,24 @@ public class AnalyticsApiTest {
 	@Test
 	public void testTopQueriesPagination() {
 		final List<QueryCount> queryCounts = api.topQueries(2, 10);
+		assertEquals(0, queryCounts.size());
+	}
+
+	@Test
+	public void testTopQueriesDateRange() {
+		final List<QueryCount> queryCounts = api.topQueries(new Date(), new Date());
+		assertEquals(1, queryCounts.size());
+	}
+
+	@Test
+	public void testTopNoResultQueries() {
+		final List<QueryCount> queryCounts = api.topNoResultQueries();
+		assertEquals(2, queryCounts.size());
+	}
+
+	@Test
+	public void testTopNoResultQueriesDateRange() {
+		final List<QueryCount> queryCounts = api.topNoResultQueries(new Date(), new Date());
 		assertEquals(0, queryCounts.size());
 	}
 }
