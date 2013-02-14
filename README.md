@@ -1,4 +1,80 @@
-# Configuration:
+# Quickstart
+
+## Setup
+
+1. Create an account at [Swiftype](https://swiftype.com/) and get your API key from your [Account Settings](https://swiftype.com/user/edit).
+
+2. Configure your client:
+
+	    SwiftypeConfig.INSTANCE.setApiKey("YOUR_API_KEY");
+
+3. Create an `Engine` named e.g. `youtube`:
+
+	    final EnginesApi enginesApi = new EnginesApi();
+		final Engine engine = enginesApi.create("youtube");
+
+4. Create your `DocumentType`s:
+
+	    final DocumentTypesApi documentTypesApi = new DocumentTypesApi("youtube");
+		documentTypesApi.create("videos");
+		documentTypesApi.create("channels");
+
+## Indexing
+
+Now you need to create your `Document`s. It's very important to think about the type of each field you create a `Document`. The `DocumentType` the `Document` belongs to will remember each fields type and it is not possible to change it. The type specifies a fields features and you should choose them wisely. For details please have a look at our [Field Types Documentation](https://swiftype.com/documentation/overview#field_types).
+
+Add a `Document` to the `videos` `DocumentType`:
+
+	final DocumentsApi documentsApi = new DocumentsApi("youtube", "videos");
+	final JSONObject jsonDocument = new JSONObject("{\"external_id\": \"external_id1\"," +
+		" \"fields\": [" +
+		"{\"name\": \"title\", \"value\": \"Swiftype Demo\", \"type\": \"string\"}" +
+		"{\"name\": \"tags\", \"value\": [\"Swiftype\", \"Search\", \"Full text search\"], \"type\": \"string\"}" +
+		"{\"name\": \"url\", \"value\": \"http://www.youtube.com/watch?v=pITuOcGgpBs\", \"type\": \"enum\"}" +
+		"{\"name\": \"category\", \"value\": [\"Tutorial\", \"Product\"], \"type\": \"enum\"}" +
+		"{\"name\": \"publication_date\", \"value\": \"2012-05-08T12:07Z\", \"type\": \"date\"}" +
+		"{\"name\": \"length\", \"value\": 1.50, \"type\": \"float\"}" +
+		"]}");
+	final Document document = documentsApi.create(jsonDocument);
+
+Each `Document` of a `DocumentType` needs to have a unique `external_id`, which can be used to find, update or delete the document later. `title` and `tags` are `string`s, because they are short text and we want them to be searchable. `url` is an `enum`, because we don't want it do be searchable. `category` is an `enum`, so we can use this field to select only `Document`s belonging to a specified `category`. `publication_date` is a `date` in ISO 8601 format and can be use to search for `videos` in a specific time range. `length` is a `float` and can be used like `publication_date` to search only for `videos` in a specific `length` range.
+
+Add a `Document` to the `users` `DocumentType`:
+
+	final DocumentsApi documentsApi = new DocumentsApi("youtube", "channels");
+	final JSONObject jsonDocument = new JSONObject("{\"external_id\": \"external_id1\"," +
+		" \"fields\": [" +
+		"{\"name\": \"title\", \"value\": \"Swiftype\", \"type\": \"string\"}" +
+		"{\"name\": \"url\", \"value\": \"http://www.youtube.com/user/swiftype\", \"type\": \"enum\"}" +
+		"{\"name\": \"video_views\", \"value\": 15678, \"type\": \"integer\"}" +
+		"{\"name\": \"video_counts\", \"value\": 6, \"type\": \"integer\"}" +
+		"]}");
+	final Document document = documentsApi.create(jsonDocument);
+
+## Searching
+
+Now your `Engine` is ready to receive queries. By default, search queries will match any fields that are of type `string` or `text`. You can search each `DocumentType` individually:
+
+	final DocumentTypesApi documentTypesApi = new DocumentTypesApi("youtube");
+	final SearchResult videosResult = documentTypesApi.search("videos", "swiftype");
+
+	final SearchResult channelsResult = documentTypeApi.search("channels", "swiftype");
+
+or search all `DocumentType`s on your `Engine` at once:
+
+	final EnginesApi enginesApi = new EnginesApi();
+	final Map<String, SearchResult> results = enginesApi.search("youtube", "swiftype");
+
+## Autocomplete
+
+Finally, as with full-text searches, you may perform autocomplete-style (prefix match) searches as well:
+
+	final DocumentTypesApi documentTypesApi = new DocumentTypesApi("youtube");
+	final SuggestResult videosResult = documentTypesApi.suggest("videos", "swiftype");
+
+# API Documentation
+
+## Configuration:
 
 Before issuing commands to the API, configure the client with your API key:
 
@@ -6,7 +82,7 @@ Before issuing commands to the API, configure the client with your API key:
 
 You can find your API key in your [Account Settings](https://swiftype.com/user/edit).
 
-# Search
+## Search
 
 If you want to search for e.g. `action` on your engine, you can use:
 
@@ -24,7 +100,7 @@ Both search methods allow you to specify options as an extra parameter to e.g. f
 	final EnginesApi enginesApi = new EnginesApi();
 	final Map<String, SearchResult> results =  enginesApi.search("bookstore", "action", options);
 
-## Options
+### Options
 
 Create a options builder:
 
@@ -78,7 +154,7 @@ To count the available `genre`s:
 
 	optionsBuilder.facets("books", "genre")
 
-# Autocomplete
+## Autocomplete
 
 Autocompletes have the same functionality as searches. You can autocomplete using all documents:
 
@@ -96,7 +172,7 @@ or add options to have more control over the results:
 	final EnginesApi enginesApi = new EnginesApi();
 	final Map<String, SuggestResult> results = enginesApi.suggest("bookstore", "acti", options);
 
-# Engines
+## Engines
 
 Retrieve every `Engine`:
 
@@ -118,7 +194,7 @@ To delete an `Engine` you need the `slug` or the `id` field of an `engine`:
 	final EnginesApi enginesApi = new EnginesApi();
 	enginesApi.destroy("bookstore");
 
-# Document Types
+## Document Types
 
 Retrieve all `DocumentTypes`s of the `Engine` with the `slug` field `bookstore`:
 
@@ -140,7 +216,7 @@ Delete a `DocumentType` using the `slug` or `id` of it:
 	final DocumentTypesApi documentTypesApi = new DocumentTypesApi("bookstore");
 	documentTypesApi.destroy("books");
 
-# Documents
+## Documents
 
 Retrieve `Document`s of `Engine` `bookstore` and `DocumentType` `books`:
 
@@ -218,7 +294,7 @@ Destroy multiple `Document`s at once:
 	final DocumentsApi documentsApi = new DocumentsApi("bookstore", "books");
 	final boolean[] stati = documentsApi.destroy("1", "2", "3");
 
-# Domains
+## Domains
 
 Retrieve all `Domain`s of `Engine` `websites`:
 
@@ -250,7 +326,7 @@ Add or update a URL for a `Domain`:
 	final DomainsApi domainsApi = new DomainsApi("websites");
 	domainsApi.crawlUrl("generated_id", "https://swiftype.com/new/path/about.html");
 
-# Analytics
+## Analytics
 
 To get the amount of searches on your `Engine` in the last 14 days use:
 
