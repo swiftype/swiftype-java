@@ -80,7 +80,7 @@ public class Engine {
 	/**
 	 * Delete this engine
 	 *
-	 * @return	Success of the delete
+	 * @return	Success of deletion
 	 */
 	public boolean destroy() {
 		checkDestroyed();

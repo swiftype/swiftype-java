@@ -46,7 +46,7 @@ public class DocumentType {
 	/**
 	 * Destroy the current DocumentType
 	 *
-	 * @return	Success of deletion
+	 * @return	Success of deletion command
 	 */
 	public boolean destroy() {
 		checkDestroyed();

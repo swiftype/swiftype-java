@@ -58,7 +58,7 @@ public class Document {
 	}
 
 	/**
-	 * @return	Success of deletion
+	 * @return		Success of deletion command
 	 */
 	public boolean destroy() {
 		checkDestroyed();

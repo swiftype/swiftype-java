@@ -2,12 +2,13 @@ package com.swiftype.api.easy;
 
 import java.util.Map;
 
+import javax.xml.ws.WebServiceException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.swiftype.api.easy.helper.Client;
-import com.swiftype.api.easy.helper.Client.Response;
 import com.swiftype.api.easy.helper.SearchOptions;
 import com.swiftype.api.easy.helper.SearchResult;
 import com.swiftype.api.easy.helper.SuggestResult;
@@ -23,16 +24,15 @@ public class DocumentTypesApi {
 	 * @return	List of DocumentTypes for the current engine
 	 */
 	public DocumentType[] getAll() {
-		final Response response = Client.get(documentTypesPath());
 		try {
-			final JSONArray documentTypesJson = new JSONArray(response.body);
+			final JSONArray documentTypesJson = new JSONArray(Client.get(documentTypesPath()));
 			final DocumentType[] documentTypes = new DocumentType[documentTypesJson.length()];
 			for (int i = 0; i < documentTypes.length; ++i) {
 				documentTypes[i] = DocumentType.fromJson(documentTypesJson.getJSONObject(i));
 			}
 			return documentTypes;
 		} catch (JSONException e) {
-			return null;
+			throw new IllegalStateException(e.getMessage());
 		}
 	}
 
@@ -54,10 +54,15 @@ public class DocumentTypesApi {
 
 	/**
 	 * @param documentTypeId	DocumentType slug or id
-	 * @return					Success of deletion
+	 * @return					Success of deletion command
 	 */
 	public boolean destroy(final String documentTypeId) {
-		return Client.delete(documentTypePath(documentTypeId)).isSuccess();
+		try {
+			Client.delete(documentTypePath(documentTypeId));
+			return true;
+		} catch (WebServiceException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -77,7 +82,7 @@ public class DocumentTypesApi {
 	 * @return					Search results
 	 */
 	public SearchResult search(final String documentTypeId, final String query, final SearchOptions options) {
-		final Response response = Client.post(documentTypePath(documentTypeId) + "/search", options.withQuery(query));
+		final String response = Client.post(documentTypePath(documentTypeId) + "/search", options.withQuery(query));
 		return toSearchResults(response).get(documentTypeId);
 	}
 
@@ -97,7 +102,7 @@ public class DocumentTypesApi {
 	 * @return					Suggest results
 	 */
 	public SuggestResult suggest(final String documentTypeId, final String query, final SearchOptions options) {
-		final Response response = Client.post(documentTypePath(documentTypeId) + "/suggest", options.withQuery(query));
+		final String response = Client.post(documentTypePath(documentTypeId) + "/suggest", options.withQuery(query));
 		return toSuggestResults(response).get(documentTypeId);
 	}
 
@@ -109,30 +114,30 @@ public class DocumentTypesApi {
 		return documentTypesPath() + "/" + documentTypeId;
 	}
 
-	private static DocumentType toDocumentType(final Response response){
+	private static DocumentType toDocumentType(final String response){
 		try {
-			final JSONObject json = new JSONObject(response.body);
+			final JSONObject json = new JSONObject(response);
 			return DocumentType.fromJson(json);
 		} catch (JSONException e) {
-			return null;
+			throw new IllegalStateException(e.getMessage());
 		}
 	}
 
-	private Map<String, SearchResult> toSearchResults(final Response response) {
+	private Map<String, SearchResult> toSearchResults(final String response) {
 		try {
-			final JSONObject json = new JSONObject(response.body);
+			final JSONObject json = new JSONObject(response);
 			return SearchResult.fromJson(json);
 		} catch (JSONException e) {
-			return null;
+			throw new IllegalStateException(e.getMessage());
 		}
 	}
 
-	private Map<String, SuggestResult> toSuggestResults(final Response response) {
+	private Map<String, SuggestResult> toSuggestResults(final String response) {
 		try {
-			final JSONObject json = new JSONObject(response.body);
+			final JSONObject json = new JSONObject(response);
 			return SuggestResult.fromJson(json);
 		} catch (JSONException e) {
-			return null;
+			throw new IllegalStateException(e.getMessage());
 		}
 	}
 }

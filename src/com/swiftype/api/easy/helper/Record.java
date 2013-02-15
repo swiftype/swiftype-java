@@ -38,7 +38,7 @@ public class Record {
 			json.remove("highlight");
 		}
 
-		return new Record(extractFields(highlights), extractFields(json));
+		return new Record(extractFields(json), extractFields(highlights));
 	}
 
 	public static List<Record> fromJsonArray(final JSONArray json) {

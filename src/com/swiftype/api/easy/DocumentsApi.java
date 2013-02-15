@@ -2,12 +2,13 @@ package com.swiftype.api.easy;
 
 import java.util.Arrays;
 
+import javax.xml.ws.WebServiceException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.swiftype.api.easy.helper.Client;
-import com.swiftype.api.easy.helper.Client.Response;
 
 public class DocumentsApi {
 	private final String documentTypeId;
@@ -118,11 +119,15 @@ public class DocumentsApi {
 
 	/**
 	 * @param documentId	Id of Document
-	 * @return				Success of deletion
+	 * @return				Success of deletion command
 	 */
 	public boolean destroy(final String documentId) {
-		final Response response = Client.delete(documentPath(documentId));
-		return response.isSuccess();
+		try {
+			Client.delete(documentPath(documentId));
+			return true;
+		} catch (WebServiceException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -139,13 +144,12 @@ public class DocumentsApi {
 			sb.deleteCharAt(sb.length() - 1);
 		}
 		sb.append("] }");
-		final Response response = Client.post(documentsPath() + "/bulk_destroy", sb.toString());
-		return toBooleans(response);
+		return toBooleans(Client.post(documentsPath() + "/bulk_destroy", sb.toString()));
 	}
 
-	private Document[] toDocuments(final Response response) {
+	private Document[] toDocuments(final String response) {
 		try {
-			final JSONArray documentsJson = new JSONArray(response.body);
+			final JSONArray documentsJson = new JSONArray(response);
 			final Document[] documents = new Document[documentsJson.length()];
 			for (int i = 0; i < documents.length; ++i) {
 				documents[i] = Document.fromJson(documentsJson.getJSONObject(i));
@@ -156,24 +160,18 @@ public class DocumentsApi {
 		}
 	}
 
-	private Document toDocument(final Response response) {
-		if (!response.isSuccess()) {
-			return null;
-		}
+	private Document toDocument(final String response) {
 		try {
-			final JSONObject json = new JSONObject(response.body);
+			final JSONObject json = new JSONObject(response);
 			return Document.fromJson(json);
 		} catch (JSONException e) {
 			return null;
 		}
 	}
 
-	private boolean[] toBooleans(final Response response) {
-		if (!response.isSuccess()) {
-			return null;
-		}
+	private boolean[] toBooleans(final String response) {
 		try {
-			final JSONArray json = new JSONArray(response.body);
+			final JSONArray json = new JSONArray(response);
 			final boolean[] stati = new boolean[json.length()];
 			for (int i = 0; i < stati.length; ++i) {
 				stati[i] = json.getBoolean(i);

@@ -10,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import com.swiftype.api.easy.helper.Client;
-import com.swiftype.api.easy.helper.Client.Response;
 
 /**
  * Provides access to the @see <a href="https://swiftype.com/documentation/analytics">Analytics API</a>
@@ -158,9 +157,9 @@ public class AnalyticsApi {
 		return new String[][] {fromDate, toDate};
 	}
 
-	private List<DateCount> toDateCountList(final Response response) {
+	private List<DateCount> toDateCountList(final String response) {
 		try {
-			final JSONArray dateCountsJson = new JSONArray(response.body);
+			final JSONArray dateCountsJson = new JSONArray(response);
 			final List<DateCount> dateCounts = new ArrayList<AnalyticsApi.DateCount>(dateCountsJson.length());
 			for (int i = 0; i < dateCountsJson.length(); ++i) {
 				final JSONArray dataPoint = dateCountsJson.getJSONArray(i);
@@ -176,9 +175,9 @@ public class AnalyticsApi {
 		}
 	}
 
-	private List<QueryCount> toQueryCountList(final Response response) {
+	private List<QueryCount> toQueryCountList(final String response) {
 		try {
-			final JSONArray queryCountsJson = new JSONArray(response.body);
+			final JSONArray queryCountsJson = new JSONArray(response);
 			final List<QueryCount> queryCounts = new ArrayList<AnalyticsApi.QueryCount>(queryCountsJson.length());
 			for (int i = 0; i < queryCountsJson.length(); ++i) {
 				final JSONArray dataPoint = queryCountsJson.getJSONArray(i);

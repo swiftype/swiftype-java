@@ -63,7 +63,9 @@ public class Domain {
 	}
 
 	/**
-	 * @return	Success of deleting this domain
+	 * Delete this domain
+	 *
+	 * @return	Success of deletion
 	 */
 	public boolean destroy() {
 		checkDestroyed();

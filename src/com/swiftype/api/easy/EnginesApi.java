@@ -2,12 +2,13 @@ package com.swiftype.api.easy;
 
 import java.util.Map;
 
+import javax.xml.ws.WebServiceException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.swiftype.api.easy.helper.Client;
-import com.swiftype.api.easy.helper.Client.Response;
 import com.swiftype.api.easy.helper.SearchOptions;
 import com.swiftype.api.easy.helper.SearchResult;
 import com.swiftype.api.easy.helper.SuggestResult;
@@ -19,16 +20,15 @@ public class EnginesApi {
 	 * @return	List of all your engines
 	 */
 	public Engine[] getAll() {
-		final Response response = Client.get(ENGINES_PATH);
 		try {
-			final JSONArray enginesJson = new JSONArray(response.body);
+			final JSONArray enginesJson = new JSONArray(Client.get(ENGINES_PATH));
 			final Engine[] engines = new Engine[enginesJson.length()];
 			for (int i = 0; i < engines.length; ++i) {
 				engines[i] = Engine.fromJson(enginesJson.getJSONObject(i));
 			}
 			return engines;
 		} catch (JSONException e) {
-			return null;
+			throw new IllegalStateException(e.getMessage());
 		}
 	}
 
@@ -37,8 +37,7 @@ public class EnginesApi {
 	 * @return				Engine matching the specified engineId
 	 */
 	public Engine get(final String engineId) {
-		final Response response = Client.get(enginePath(engineId));
-		return toEngine(response);
+		return toEngine(Client.get(enginePath(engineId)));
 	}
 
 	/**
@@ -46,7 +45,7 @@ public class EnginesApi {
 	 * @return			Created engine
 	 */
 	public Engine create(final String name) {
-		final Response response = Client.post(ENGINES_PATH, "{\"engine\": {\"name\": \"" + name + "\"}}");
+		final String response = Client.post(ENGINES_PATH, "{\"engine\": {\"name\": \"" + name + "\"}}");
 		return toEngine(response);
 	}
 
@@ -55,8 +54,12 @@ public class EnginesApi {
 	 * @return			Success of deletion
 	 */
 	public boolean destroy(final String engineId) {
-		final Response response = Client.delete(enginePath(engineId));
-		return response.isSuccess();
+		try {
+			Client.delete(enginePath(engineId));
+			return true;
+		} catch (WebServiceException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -75,8 +78,7 @@ public class EnginesApi {
 	 * @return			Search results per DocumentType
 	 */
 	public Map<String, SearchResult> search(final String engineId, final String query, final SearchOptions options) {
-		final Response response = Client.post(enginePath(engineId) + "/search", options.withQuery(query));
-		return toSearchResults(response);
+		return toSearchResults(Client.post(enginePath(engineId) + "/search", options.withQuery(query)));
 	}
 
 	/**
@@ -95,38 +97,37 @@ public class EnginesApi {
 	 * @return			Suggest results per DocumentType
 	 */
 	public Map<String, SuggestResult> suggest(final String engineId, final String query, final SearchOptions options) {
-		final Response response = Client.post(enginePath(engineId) + "/suggest", options.withQuery(query));
-		return toSuggestResults(response);
+		return toSuggestResults(Client.post(enginePath(engineId) + "/suggest", options.withQuery(query)));
 	}
 
 	static String enginePath(final String engineId) {
 		return ENGINES_PATH + "/" + engineId;
 	}
 
-	private Engine toEngine(final Response response){
+	private Engine toEngine(final String response){
 		try {
-			final JSONObject json = new JSONObject(response.body);
+			final JSONObject json = new JSONObject(response);
 			return Engine.fromJson(json);
 		} catch (JSONException e) {
-			return null;
+			throw new IllegalStateException(e.getMessage());
 		}
 	}
 
-	private Map<String, SearchResult> toSearchResults(final Response response) {
+	private Map<String, SearchResult> toSearchResults(final String response) {
 		try {
-			final JSONObject json = new JSONObject(response.body);
+			final JSONObject json = new JSONObject(response);
 			return SearchResult.fromJson(json);
 		} catch (JSONException e) {
-			return null;
+			throw new IllegalStateException(e.getMessage());
 		}
 	}
 
-	private Map<String, SuggestResult> toSuggestResults(final Response response) {
+	private Map<String, SuggestResult> toSuggestResults(final String response) {
 		try {
-			final JSONObject json = new JSONObject(response.body);
+			final JSONObject json = new JSONObject(response);
 			return SuggestResult.fromJson(json);
 		} catch (JSONException e) {
-			return null;
+			throw new IllegalStateException();
 		}
 	}
 }

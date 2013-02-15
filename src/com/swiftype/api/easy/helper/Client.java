@@ -13,6 +13,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
 
+import javax.xml.ws.WebServiceException;
+
 
 public class Client {
 	private static final String USER_AGENT;
@@ -23,23 +25,23 @@ public class Client {
 		USER_AGENT = "Swiftype/Java-" + CONFIG.version;
 	}
 
-	public static Response get(final String path, final String[] ... params) {
+	public static String get(final String path, final String[] ... params) {
 		return requestWithoutBody("GET", path, params);
 	}
 
-	public static Response post(final String path, final String data) {
+	public static String post(final String path, final String data) {
 		return requestWithBody("POST", path, data);
 	}
 
-	public static Response put(final String path, final String data) {
+	public static String put(final String path, final String data) {
 		return requestWithBody("PUT", path, data);
 	}
 
-	public static Response delete(final String path, final String[] ... params) {
+	public static String delete(final String path, final String[] ... params) {
 		return requestWithoutBody("DELETE", path, params);
 	}
 
-	private static Response requestWithoutBody(final String method, final String path, final String[] ... params) {
+	private static String requestWithoutBody(final String method, final String path, final String[] ... params) {
 		final URL url = buildUrl(path, params);
 		try {
 			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -48,15 +50,10 @@ public class Client {
 
 			final int status = connection.getResponseCode();
 
-			InputStream in;
-			if (status / 100 == 2) {
-				in = connection.getInputStream();
-			} else {
-				in = connection.getErrorStream();
-			}
+			final boolean isSuccess = (status / 100 == 2);
+			InputStream in = isSuccess ? connection.getInputStream() : connection.getErrorStream();
 
 			final StringBuilder sb = new StringBuilder();
-
 			if (in != null) {
 				final BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 				String line;
@@ -64,18 +61,22 @@ public class Client {
 					sb.append(line);
 					sb.append("\n");
 				}
+				reader.close();
 			}
 
-			return new Response(status, sb.toString());
+			if (!isSuccess) {
+				throw new WebServiceException(sb.toString());
+			}
+
+			return sb.toString();
 		} catch (FileNotFoundException e) {
-			return new Response(404, "");
+			throw new WebServiceException(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new WebServiceException(e.getMessage());
 		}
-		return null;
 	}
 
-	private static Response requestWithBody(final String method, final String path, final String data) {
+	private static String requestWithBody(final String method, final String path, final String data) {
 		final URL url = buildUrl(path);
 		try {
 			final byte[] dataBytes = data.getBytes("UTF-8");
@@ -92,15 +93,10 @@ public class Client {
 			out.flush();
 			final int status = connection.getResponseCode();
 
-			InputStream in;
-			if (status / 100 == 2) {
-				in = connection.getInputStream();
-			} else {
-				in = connection.getErrorStream();
-			}
+			final boolean isSuccess = (status / 100 == 2);
+			InputStream in = isSuccess ? connection.getInputStream() : connection.getErrorStream();
 
 			final StringBuilder sb = new StringBuilder();
-
 			if (in != null) {
 				final BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 				String line;
@@ -108,15 +104,19 @@ public class Client {
 					sb.append(line);
 					sb.append("\n");
 				}
+				reader.close();
 			}
 
-			return new Response(status, sb.toString());
+			if (!isSuccess) {
+				throw new WebServiceException(sb.toString());
+			}
+
+			return sb.toString();
 		} catch (FileNotFoundException e) {
-			return new Response(404, "");
+			throw new WebServiceException(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new WebServiceException(e.getMessage());
 		}
-		return null;
 	}
 
 	private static URL buildUrl(final String path, final String[] ... params) {
@@ -142,20 +142,6 @@ public class Client {
 				sb.deleteCharAt(sb.length() - 1);
 			}
 			throw new IllegalArgumentException("'" + paramsSb.toString() + "' is no valid parameter set.");
-		}
-	}
-
-	public static class Response {
-		public final int status;
-		public final String body;
-
-		public Response(final int status, final String body) {
-			this.status = status;
-			this.body = body;
-		}
-
-		public boolean isSuccess() {
-			return (status / 100) == 2;
 		}
 	}
 }
