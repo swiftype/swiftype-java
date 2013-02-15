@@ -28,26 +28,24 @@ Add a `Document` to the `videos` `DocumentType`:
 	final DocumentsApi documentsApi = new DocumentsApi("youtube", "videos");
 	final JSONObject jsonDocument = new JSONObject("{\"external_id\": \"external_id1\"," +
 		" \"fields\": [" +
-		"{\"name\": \"title\", \"value\": \"Swiftype Demo\", \"type\": \"string\"}" +
-		"{\"name\": \"tags\", \"value\": [\"Swiftype\", \"Search\", \"Full text search\"], \"type\": \"string\"}" +
-		"{\"name\": \"url\", \"value\": \"http://www.youtube.com/watch?v=pITuOcGgpBs\", \"type\": \"enum\"}" +
-		"{\"name\": \"category\", \"value\": [\"Tutorial\", \"Product\"], \"type\": \"enum\"}" +
-		"{\"name\": \"publication_date\", \"value\": \"2012-05-08T12:07Z\", \"type\": \"date\"}" +
-		"{\"name\": \"likes\", \"value\": 31, \"type\": \"integer\"}" +
+		"{\"name\": \"title\", \"value\": \"Swiftype Demo\", \"type\": \"string\"}," +
+		"{\"name\": \"tags\", \"value\": [\"Swiftype\", \"Search\", \"Full text search\"], \"type\": \"string\"}," +
+		"{\"name\": \"url\", \"value\": \"http://www.youtube.com/watch?v=pITuOcGgpBs\", \"type\": \"enum\"}," +
+		"{\"name\": \"category\", \"value\": [\"Tutorial\", \"Product\"], \"type\": \"enum\"}," +
+		"{\"name\": \"publication_date\", \"value\": \"2012-05-08T12:07Z\", \"type\": \"date\"}," +
+		"{\"name\": \"likes\", \"value\": 31, \"type\": \"integer\"}," +
 		"{\"name\": \"length\", \"value\": 1.50, \"type\": \"float\"}" +
 		"]}");
 	final Document document = documentsApi.create(jsonDocument);
-
-Each `Document` of a `DocumentType` needs to have a unique `external_id`, which can be used to find, update or delete the document later. `title` and `tags` are `string`s, because they are short text and we want them to be searchable. `url` is an `enum`, because we don't want it do be searchable. `category` is an `enum`, so we can use this field to select only `Document`s belonging to a specified `category`. `publication_date` is a `date` in ISO 8601 format and can be use to search for `videos` in a specific time range. `likes` is a `integer` and `length` is a `float`. Both can be used like `publication_date` to search only for `videos` in a specific `length` range or to give the specific `Document` a functional boost based on their value.
 
 Add a `Document` to the `users` `DocumentType`:
 
 	final DocumentsApi documentsApi = new DocumentsApi("youtube", "channels");
 	final JSONObject jsonDocument = new JSONObject("{\"external_id\": \"external_id1\"," +
 		" \"fields\": [" +
-		"{\"name\": \"title\", \"value\": \"Swiftype\", \"type\": \"string\"}" +
-		"{\"name\": \"url\", \"value\": \"http://www.youtube.com/user/swiftype\", \"type\": \"enum\"}" +
-		"{\"name\": \"video_views\", \"value\": 15678, \"type\": \"integer\"}" +
+		"{\"name\": \"title\", \"value\": \"Swiftype\", \"type\": \"string\"}," +
+		"{\"name\": \"url\", \"value\": \"http://www.youtube.com/user/swiftype\", \"type\": \"enum\"}," +
+		"{\"name\": \"video_views\", \"value\": 15678, \"type\": \"integer\"}," +
 		"{\"name\": \"video_counts\", \"value\": 6, \"type\": \"integer\"}" +
 		"]}");
 	final Document document = documentsApi.create(jsonDocument);
@@ -99,7 +97,7 @@ Both search methods allow you to specify options as an extra parameter to e.g. f
 
 	final SearchOptions options = new SearchOptions.Builder().filters("videos", "category", "Tutorial").build();
 	final EnginesApi enginesApi = new EnginesApi();
-	final Map<String, SearchResult> results =  enginesApi.search("videos", "swiftype", options);
+	final Map<String, SearchResult> results =  enginesApi.search("youtube", "swiftype", options);
 
 ### Options
 
@@ -332,7 +330,7 @@ Retrieve all `Domain`s of `Engine` `websites`:
 	final DomainsApi domainsApi = new DomainsApi("websites");
 	final Domain[] domains = domainsApi.getAll();
 
-Retrieve a specific `Domain` by `id`:
+Retrieve a specific `Domain` by `id`. You can get the "generated_id" from the returned `Domain` after a create or from one of the `Domain`s after a `domainsApi.getAll()` with `domain.getId()`:
 
 	final DomainsApi domainsApi = new DomainsApi("websites");
 	final Domain domain = domainsApi.get("generated_id");
