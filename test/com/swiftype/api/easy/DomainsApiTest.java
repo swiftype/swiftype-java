@@ -50,6 +50,7 @@ public class DomainsApiTest {
 		assertEquals(domain.getId(), DOMAIN_ID);
 	}
 
+	@Test
 	public void testCrawlUrl() {
 		api.crawlUrl(DOMAIN_ID, URL);
 	}
