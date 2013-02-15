@@ -50,17 +50,20 @@ public class SearchResult {
 		public final int pageCount;
 		public final int page;
 		public final int perPage;
+		public final JSONObject facets;
 
 		private Info(final String query,
 					final int totalResultCount,
 					final int pageCount,
 					final int page,
-					final int perPage) {
+					final int perPage,
+					final JSONObject facets) {
 			this.query = query;
 			this.totalResultCount = totalResultCount;
 			this.pageCount = pageCount;
 			this.page = page;
 			this.perPage = perPage;
+			this.facets = facets;
 		}
 
 		public static Info fromJson(final JSONObject json) {
@@ -69,7 +72,8 @@ public class SearchResult {
 			final int pageCount = json.optInt("num_pages");
 			final int page = json.optInt("current_page");
 			final int perPage = json.optInt("per_page");
-			return new Info(query, totalResultCount, pageCount, page, perPage);
+			final JSONObject facets = json.optJSONObject("facets");
+			return new Info(query, totalResultCount, pageCount, page, perPage, facets);
 		}
 	}
 }
