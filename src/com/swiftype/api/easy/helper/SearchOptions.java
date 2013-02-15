@@ -107,7 +107,7 @@ public class SearchOptions {
 		 * 						@see <a href="https://swiftype.com/documentation/searching#filters">Filter Documentation</a>
 		 * @return
 		 */
-		public Builder filters(final String documentType, final String field, final String filter) {
+		public Builder filter(final String documentType, final String field, final String filter) {
 			Map<String, String> documentTypeFilters = filters.get(documentType);
 			if (documentTypeFilters == null) {
 				documentTypeFilters = new HashMap<String, String>();

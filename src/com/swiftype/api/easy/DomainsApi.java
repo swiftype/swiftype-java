@@ -72,15 +72,9 @@ public class DomainsApi {
 	/**
 	 * @param domainId	Id of the domain
 	 * @param url		URL to add or update on this domain
-	 * @return			Success of crawl command
 	 */
-	public boolean crawlUrl(final String domainId, final String url) {
-		try {
-			Client.put(domainPath(domainId) + "/crawl_url", "{\"url\": \"" + url + "\"}");
-			return true;
-		} catch (WebServiceException e) {
-			return false;
-		}
+	public void crawlUrl(final String domainId, final String url) {
+		Client.put(domainPath(domainId) + "/crawl_url", "{\"url\": \"" + url + "\"}");
 	}
 
 	String domainsPath() {

@@ -44,11 +44,10 @@ public class Domain {
 
 	/**
 	 * @param url	URL to add or update on this domain
-	 * @return
 	 */
-	public boolean crawlUrl(final String url) {
+	public void crawlUrl(final String url) {
 		checkDestroyed();
-		return api.crawlUrl(id, url);
+		api.crawlUrl(id, url);
 	}
 
 	/**

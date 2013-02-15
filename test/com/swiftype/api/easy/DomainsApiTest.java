@@ -6,8 +6,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.swiftype.api.easy.Domain;
-import com.swiftype.api.easy.DomainsApi;
 import com.swiftype.api.easy.helper.SwiftypeConfig;
 
 public class DomainsApiTest {
@@ -52,8 +50,7 @@ public class DomainsApiTest {
 		assertEquals(domain.getId(), DOMAIN_ID);
 	}
 
-	@Test
 	public void testCrawlUrl() {
-		assertTrue(api.crawlUrl(DOMAIN_ID, URL));
+		api.crawlUrl(DOMAIN_ID, URL);
 	}
 }
