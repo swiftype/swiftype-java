@@ -1,5 +1,30 @@
 # Quickstart
 
+## Introduction
+
+As an example for a Swiftype search engine, we will create a new `Engine` called `youtube`. This `Engine` has two `DocumentType`s, one for all `videos` and the other for `channels`. It's very important to think about the type of each field for each `DocumentType`. When you create a `Document`, the corresponding `DocumentType` will automatically use the types you specified in the fields of this `Document`. The type specifies a fields features and you should choose them wisely. You can always add new fields, but you can't update the type of an existing field. For more information on field types and there use cases, please have a look at [Field Types Documentation](https://swiftype.com/documentation/overview#field_types).
+
+- `videos` `DocumentType` fields:
+  - `title`: Because `title` is a short text and should be used in each search and we want it to be optimized for autocompletion, it is a `string`.
+  - `url`: `url` is used to store the URL of the video and shouldn't be used for searches, thus we use `enum` for this field.
+  - `description`: This field can be of arbitrary length and we want to use it in searches, which is why we use `text` for it.
+  - `transcript`: As `description` this can be of any length and we want it to be searchable, so we use the `text` type.
+  - `category`: `category` will be an `enum`, because we want to use it to filter on videos.
+  - `tags`: We want to use `tags` as another text source for our searches, so we have to use `string`, because it' a short text.
+  - `privacy`: Like `category` `privacy` can be used to filter searches and e.g. just show public videos, so we choose `enum`.
+  - `publication_date`: For dates we use the `date` type. This allows us to sort search results by `publication_date`
+  - `length`: `length` will be of type `integer` and specifies the length of a video in seconds. This can be used to filter or sort based on its value or to apply [Functional Boosts](http://localhost:3000/documentation/searching#functional_boosts) to influence the ranking of search results based on video length.
+  - `likes`: `likes` can be used in the same way as `length` and are thus also of type `integer`.
+
+- `channels` `DocumentType` fields:
+  - `title`: This is a short text and we want to use it in searches and optimize it for autocompletes, thus we use `string`.
+  - `summary`: This could be a longer text, but we still want to use it for searches, so we make it of type `text`.
+  - `url`: `url` is used to store the URL of the channel and shouldn't be used for searches, thus we use `enum` for this field.
+  - `video_count`: This is an `integer` field and can be used to filter, sort or boost channels in search results.
+  - `subscriber_count`: Like `video_count` we use `integer`.
+  - `video_views`: Also an `integer`.
+  - `playlist_names`: Names of playlists in this channel is an array of small texts. We want to use these values in searches and also optimize them for autocompletes, so we use the type `string`. If you have multiple playlist names, just send them as an array, when you create a document.
+
 ## Setup
 
 1. Create an account at [Swiftype](https://swiftype.com/) and get your API key from your [Account Settings](https://swiftype.com/user/edit).
@@ -21,7 +46,7 @@
 
 ## Indexing
 
-Now you need to create your `Document`s. It's very important to think about the type of each field you create a `Document`. The `DocumentType` the `Document` belongs to will remember each fields type and it is not possible to change it. The type specifies a fields features and you should choose them wisely. For details please have a look at our [Field Types Documentation](https://swiftype.com/documentation/overview#field_types).
+Now you need to create your `Document`s.
 
 Add a `Document` to the `videos` `DocumentType`:
 
@@ -34,7 +59,7 @@ Add a `Document` to the `videos` `DocumentType`:
 		"{\"name\": \"category\", \"value\": [\"Tutorial\", \"Product\"], \"type\": \"enum\"}," +
 		"{\"name\": \"publication_date\", \"value\": \"2012-05-08T12:07Z\", \"type\": \"date\"}," +
 		"{\"name\": \"likes\", \"value\": 31, \"type\": \"integer\"}," +
-		"{\"name\": \"length\", \"value\": 1.50, \"type\": \"float\"}" +
+		"{\"name\": \"length\", \"value\": 110, \"type\": \"integer\"}" +
 		"]}");
 	final Document document = documentsApi.create(jsonDocument);
 
@@ -70,6 +95,8 @@ Finally, as with full-text searches, you may perform autocomplete-style (prefix 
 
 	final DocumentTypesApi documentTypesApi = new DocumentTypesApi("youtube");
 	final SuggestResult videosResult = documentTypesApi.suggest("videos", "swiftype");
+
+Autocomplete searches have the advantage of matching prefixes of words in `string` fields. For example if we have a `Document` with a `string` field containing 'Testing Title', autocomplete searches would find it with the queries 'te', 'tes', 'test', 'testi', etc. In a normal search only queries like 'test', 'testing' and not 'tes' or 'testi' would match a field like this. This happens because in a search, we look only at different versions of a word, e.g. 'test' and 'testing' in this case and in autocompletes we also consider 'te', 'tes', 'testi' and 'testin'.
 
 # API Documentation
 
@@ -243,7 +270,7 @@ Create a new `Document` with mandatory and unique `external_id` and user-defined
 		"{\"name\": \"category\", \"value\": [\"Tutorial\", \"Product\"], \"type\": \"enum\"}," +
 		"{\"name\": \"publication_date\", \"value\": \"2012-05-08T12:07Z\", \"type\": \"date\"}," +
 		"{\"name\": \"likes\", \"value\": 31, \"type\": \"integer\"}," +
-		"{\"name\": \"length\", \"value\": 1.50, \"type\": \"float\"}" +
+		"{\"name\": \"length\", \"value\": 110, \"type\": \"integer\"}" +
 		"]}");
 	documentsApi.create(jsonDocument);
 
@@ -258,7 +285,7 @@ Create multiple `Document`s at once and return status for each `Document`< creat
 		"{\"name\": \"category\", \"value\": [\"Tutorial\", \"Product\"], \"type\": \"enum\"}," +
 		"{\"name\": \"publication_date\", \"value\": \"2012-05-08T12:07Z\", \"type\": \"date\"}," +
 		"{\"name\": \"likes\", \"value\": 27, \"type\": \"integer\"}," +
-		"{\"name\": \"length\", \"value\": 1.50, \"type\": \"float\"}" +
+		"{\"name\": \"length\", \"value\": 110, \"type\": \"integer\"}" +
 		"]}");
 	final JSONObject jsonDocument2 = new JSONObject("{\"external_id\": \"external_id2\"," +
 		" \"fields\": [" +
@@ -268,7 +295,7 @@ Create multiple `Document`s at once and return status for each `Document`< creat
 		"{\"name\": \"category\", \"value\": [\"Tutorial\", \"Wordpress\"], \"type\": \"enum\"}," +
 		"{\"name\": \"publication_date\", \"value\": \"2012-08-15T09:07Z\", \"type\": \"date\"}," +
 		"{\"name\": \"likes\", \"value\": 2, \"type\": \"integer\"}," +
-		"{\"name\": \"length\", \"value\": 2.16, \"type\": \"float\"}" +
+		"{\"name\": \"length\", \"value\": 136, \"type\": \"integer\"}" +
 		"]}");
 	final boolean[] stati = documentsApi.create(new JSONObject[] {jsonDocument1, jsonDocument2});
 
