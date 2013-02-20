@@ -65,7 +65,7 @@ public class Client {
 			}
 
 			if (!isSuccess) {
-				throw new WebServiceException(sb.toString());
+				errorResponse(status, sb.toString());
 			}
 
 			return sb.toString();
@@ -108,7 +108,7 @@ public class Client {
 			}
 
 			if (!isSuccess) {
-				throw new WebServiceException(sb.toString());
+				errorResponse(status, sb.toString());
 			}
 
 			return sb.toString();
@@ -143,5 +143,9 @@ public class Client {
 			}
 			throw new IllegalArgumentException("'" + paramsSb.toString() + "' is no valid parameter set.");
 		}
+	}
+
+	private static void errorResponse(final int status, final String body) {
+		throw new WebServiceException("Status: " + status + ", Body: " + body);
 	}
 }
