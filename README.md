@@ -2,7 +2,8 @@
 
 ## Introduction
 
-As an example for a Swiftype search engine, we will create a new `Engine` called `youtube`. This `Engine` has two `DocumentType`s, one for all `videos` and the other for `channels`. It's very important to think about the type of each field for each `DocumentType`. When you create a `Document`, the corresponding `DocumentType` will automatically use the types you specified in the fields of this `Document`. The type specifies a fields features and you should choose them wisely. You can always add new fields, but you can't update the type of an existing field. For more information on field types and there use cases, please have a look at [Field Types Documentation](https://swiftype.com/documentation/overview#field_types).
+As an example for a Swiftype search engine, we will create a new `Engine` called `youtube`. This `Engine` has two `DocumentType`s, one for `videos` and the other for `channels`. It's very important to think about the type of each field for a `DocumentType`. When you create a `Document`, the corresponding `DocumentType` will automatically use the types you specified in the fields of this `Document`. The type of a field defines its features and you should choose them wisely. You can always add new fields, but you can't update the type of an existing field. For more information on field types and there use cases, please have a look at [Field Types Documentation](https://swiftype.com/documentation/overview#field_types).
+
 
 - `videos` `DocumentType` fields:
   - `title`: Because `title` is a short text and should be used in each search and we want it to be optimized for autocompletion, it is a `string`.
@@ -15,6 +16,7 @@ As an example for a Swiftype search engine, we will create a new `Engine` called
   - `publication_date`: For dates we use the `date` type. This allows us to sort search results by `publication_date`
   - `length`: `length` will be of type `integer` and specifies the length of a video in seconds. This can be used to filter or sort based on its value or to apply [Functional Boosts](http://localhost:3000/documentation/searching#functional_boosts) to influence the ranking of search results based on video length.
   - `likes`: `likes` can be used in the same way as `length` and are thus also of type `integer`.
+
 
 - `channels` `DocumentType` fields:
   - `title`: This is a short text and we want to use it in searches and optimize it for autocompletes, thus we use `string`.
