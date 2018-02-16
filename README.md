@@ -1,4 +1,6 @@
-# Quickstart
+# Swiftype Site Search Java API Client
+
+> This client has been developed for [Swiftype's Site Search](https://www.swiftype.com/site-search) API endpoints only. You may refer to the [Swiftype Site Search API Documentation](https://swiftype.com/documentation/site-search/overview) for additional context.
 
 ## Introduction
 
