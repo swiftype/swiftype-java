@@ -126,7 +126,7 @@ To limit the search to only the `videos` DocumentType:
 
 Both search methods allow you to specify options as an extra parameter to e.g. filter or sort on fields. For more details on these options pelease have a look at the [Search Options](https://swiftype.com/documentation/searching) and the next section on Options. Here is an example for showing only `videos` that are in the `category` `Tutorial`:
 
-	final SearchOptions options = new SearchOptions.Builder().filters("videos", "category", "Tutorial").build();
+	final SearchOptions options = new SearchOptions.Builder().filter("videos", "category", "Tutorial").build();
 	final EnginesApi enginesApi = new EnginesApi();
 	final Map<String, SearchResult> results =  enginesApi.search("youtube", "swiftype", options);
 

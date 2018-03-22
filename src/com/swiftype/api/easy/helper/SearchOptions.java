@@ -70,7 +70,7 @@ public class SearchOptions {
 	public static class Builder {
 		private final Map<String, String[]> fetchFields = new HashMap<String, String[]>();
 		private final Map<String, String[]> searchFields = new HashMap<String, String[]>();
-		private final Map<String, Map<String, String>> filters = new HashMap<String, Map<String, String>>();
+		private final Map<String, Map<String, String[]>> filters = new HashMap<String, Map<String, String[]>>();
 		private final Map<String, Map<String, String>> functionalBoosts = new HashMap<String, Map<String, String>>();
 		private final Map<String, String> sortField = new HashMap<String, String>();
 		private final Map<String, String> sortDirection = new HashMap<String, String>();
@@ -107,10 +107,10 @@ public class SearchOptions {
 		 * 						@see <a href="https://swiftype.com/documentation/searching#filters">Filter Documentation</a>
 		 * @return
 		 */
-		public Builder filter(final String documentType, final String field, final String filter) {
-			Map<String, String> documentTypeFilters = filters.get(documentType);
+		public Builder filter(final String documentType, final String field, final String... filter) {
+			Map<String, String[]> documentTypeFilters = filters.get(documentType);
 			if (documentTypeFilters == null) {
-				documentTypeFilters = new HashMap<String, String>();
+				documentTypeFilters = new HashMap<String, String[]>();
 				filters.put(documentType, documentTypeFilters);
 			}
 			documentTypeFilters.put(field, filter);
