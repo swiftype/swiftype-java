@@ -1,4 +1,4 @@
-<p align="center"><img src="https://github.com/swiftype/swiftype-java/blob/master/logo-app-search.png?raw=true" alt="Elastic Site Search Logo"></p>
+<p align="center"><img src="https://github.com/swiftype/swiftype-java/blob/master/logo-site-search.png?raw=true" alt="Elastic Site Search Logo"></p>
 
 > A first-party Java client for the [Elastic Site Search API](https://swiftype.com/documentation/site-search/overview).
 
