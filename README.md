@@ -1,8 +1,5 @@
 <p align="center"><img src="https://github.com/swiftype/swiftype-java/blob/master/logo-app-search.png?raw=true" alt="Elastic Site Search Logo"></p>
 
-<p align="center"><a href="https://travis-ci.org/swiftype/swiftype-java"><img src="https://travis-ci.org/swiftype/swiftype-java.png?branch=master" alt="Travis build"></a>
-<a href="https://github.com/swiftype/swiftype-java/releases"><img src="https://img.shields.io/github/release/swiftype/swiftype-java/all.svg?style=flat-square" alt="GitHub release" /></a></p>
-
 > A first-party Java client for the [Elastic Site Search API](https://swiftype.com/documentation/site-search/overview).
 
 ## Contents
