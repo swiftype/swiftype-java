@@ -1,35 +1,21 @@
-# Java Client for Swiftype Site Search API
+<p align="center"><img src="https://github.com/swiftype/swiftype-java/blob/master/logo-app-search.png?raw=true" alt="Elastic Site Search Logo"></p>
 
-> This client has been developed for the [Swiftype Site Search](https://www.swiftype.com/site-search) API endpoints only. You may refer to the [Swiftype Site Search API Documentation](https://swiftype.com/documentation/site-search/overview) for additional context.
+<p align="center"><a href="https://travis-ci.org/swiftype/swiftype-java"><img src="https://travis-ci.org/swiftype/swiftype-java.png?branch=master" alt="Travis build"></a>
+<a href="https://github.com/swiftype/swiftype-java/releases"><img src="https://img.shields.io/github/release/swiftype/swiftype-java/all.svg?style=flat-square" alt="GitHub release" /></a></p>
 
-## Introduction
+> A first-party Java client for the [Elastic Site Search API](https://swiftype.com/documentation/site-search/overview).
 
-As an example for a Swiftype search engine, we will create a new `Engine` called `youtube`. This `Engine` has two `DocumentType`s, one for `videos` and the other for `channels`. It's very important to think about the type of each field for a `DocumentType`. When you create a `Document`, the corresponding `DocumentType` will automatically use the types you specified in the fields of this `Document`. The type of a field defines its features and you should choose them wisely. You can always add new fields, but you can't update the type of an existing field. For more information on field types and there use cases, please have a look at [Field Types Documentation](https://swiftype.com/documentation/overview#field_types).
+## Contents
 
++ [Getting started](#getting-started-)
++ [Usage](#usage)
++ [FAQ](#faq-)
++ [Contribute](#contribute-)
++ [License](#license-)
 
-- `videos` `DocumentType` fields:
-  - `title`: Because `title` is a short text and should be used in each search and we want it to be optimized for autocompletion, it is a `string`.
-  - `url`: `url` is used to store the URL of the video and shouldn't be used for searches, thus we use `enum` for this field.
-  - `description`: This field can be of arbitrary length and we want to use it in searches, which is why we use `text` for it.
-  - `transcript`: As `description` this can be of any length and we want it to be searchable, so we use the `text` type.
-  - `category`: `category` will be an `enum`, because we want to use it to filter on videos.
-  - `tags`: We want to use `tags` as another text source for our searches, so we have to use `string`, because it' a short text.
-  - `privacy`: Like `category` `privacy` can be used to filter searches and e.g. just show public videos, so we choose `enum`.
-  - `publication_date`: For dates we use the `date` type. This allows us to sort search results by `publication_date`
-  - `length`: `length` will be of type `integer` and specifies the length of a video in seconds. This can be used to filter or sort based on its value or to apply [Functional Boosts](http://localhost:3000/documentation/searching#functional_boosts) to influence the ranking of search results based on video length.
-  - `likes`: `likes` can be used in the same way as `length` and are thus also of type `integer`.
+***
 
-
-- `channels` `DocumentType` fields:
-  - `title`: This is a short text and we want to use it in searches and optimize it for autocompletes, thus we use `string`.
-  - `summary`: This could be a longer text, but we still want to use it for searches, so we make it of type `text`.
-  - `url`: `url` is used to store the URL of the channel and shouldn't be used for searches, thus we use `enum` for this field.
-  - `video_count`: This is an `integer` field and can be used to filter, sort or boost channels in search results.
-  - `subscriber_count`: Like `video_count` we use `integer`.
-  - `video_views`: Also an `integer`.
-  - `playlist_names`: Names of playlists in this channel is an array of small texts. We want to use these values in searches and also optimize them for autocompletes, so we use the type `string`. If you have multiple playlist names, just send them as an array, when you create a document.
-
-## Setup
+## Getting started 🐣
 
 1. Create an account at [Swiftype](https://swiftype.com/) and get your API key from your [Account Settings](https://swiftype.com/user/edit).
 
@@ -48,9 +34,11 @@ As an example for a Swiftype search engine, we will create a new `Engine` called
 		documentTypesApi.create("videos");
 		documentTypesApi.create("channels");
 
-## Indexing
+> This client has been developed for the [Elastic Site Search](https://www.swiftype.com/site-search) API endpoints only. You may refer to the [Elastic Site Search API Documentation](https://swiftype.com/documentation/site-search/overview) for additional context.
 
-Now you need to create your `Document`s.
+## Usage
+
+### Indexing
 
 Add a `Document` to the `videos` `DocumentType`:
 
@@ -79,7 +67,7 @@ Add a `Document` to the `users` `DocumentType`:
 		"]}");
 	final Document document = documentsApi.create(jsonDocument);
 
-## Searching
+### Searching
 
 Now your `Engine` is ready to receive queries. By default, search queries will match any fields that are of type `string` or `text`. You can search each `DocumentType` individually:
 
@@ -93,7 +81,7 @@ or search all `DocumentType`s on your `Engine` at once:
 	final EnginesApi enginesApi = new EnginesApi();
 	final Map<String, SearchResult> results = enginesApi.search("youtube", "swiftype");
 
-## Autocomplete
+### Autocomplete
 
 Finally, as with full-text searches, you may perform autocomplete-style (prefix match) searches as well:
 
@@ -102,9 +90,9 @@ Finally, as with full-text searches, you may perform autocomplete-style (prefix 
 
 Autocomplete searches have the advantage of matching prefixes of words in `string` fields. For example if we have a `Document` with a `string` field containing 'Testing Title', autocomplete searches would find it with the queries 'te', 'tes', 'test', 'testi', etc. In a normal search only queries like 'test', 'testing' and not 'tes' or 'testi' would match a field like this. This happens because in a search, we look only at different versions of a word, e.g. 'test' and 'testing' in this case and in autocompletes we also consider 'te', 'tes', 'testi' and 'testin'.
 
-# API Documentation
+## API Documentation
 
-## Configuration:
+### Configuration
 
 Before issuing commands to the API, configure the client with your API key:
 
@@ -112,7 +100,7 @@ Before issuing commands to the API, configure the client with your API key:
 
 You can find your API key in your [Account Settings](https://swiftype.com/user/edit).
 
-## Search
+### Search
 
 If you want to search for e.g. `swiftype` on your engine, you can use:
 
@@ -130,7 +118,7 @@ Both search methods allow you to specify options as an extra parameter to e.g. f
 	final EnginesApi enginesApi = new EnginesApi();
 	final Map<String, SearchResult> results =  enginesApi.search("youtube", "swiftype", options);
 
-### Options
+#### Options
 
 Create a options builder:
 
@@ -184,7 +172,7 @@ To count the available `categories`:
 
 	optionsBuilder.facets("videos", "category")
 
-## Autocomplete
+### Autocomplete
 
 Autocompletes have the same functionality as searches. You can autocomplete using all documents:
 
@@ -202,7 +190,7 @@ or add options to have more control over the results:
 	final EnginesApi enginesApi = new EnginesApi();
 	final Map<String, SuggestResult> results = enginesApi.suggest("youtube", "swi", options);
 
-## Engines
+### Engines
 
 Retrieve every `Engine`:
 
@@ -224,7 +212,7 @@ To delete an `Engine` you need the `slug` or the `id` field of an `engine`:
 	final EnginesApi enginesApi = new EnginesApi();
 	enginesApi.destroy("youtube");
 
-## Document Types
+### Document Types
 
 Retrieve all `DocumentTypes`s of the `Engine` with the `slug` field `youtube`:
 
@@ -246,7 +234,7 @@ Delete a `DocumentType` using the `slug` or `id` of it:
 	final DocumentTypesApi documentTypesApi = new DocumentTypesApi("youtube");
 	documentTypesApi.destroy("videos");
 
-## Documents
+### Documents
 
 Retrieve `Document`s of `Engine` `youtube` and `DocumentType` `videos`:
 
@@ -354,7 +342,7 @@ Destroy multiple `Document`s at once:
 	final DocumentsApi documentsApi = new DocumentsApi("youtube", "videos");
 	final boolean[] stati = documentsApi.destroy("external_id2", "external_id3", "external_id6");
 
-## Domains
+### Domains
 
 Retrieve all `Domain`s of `Engine` `websites`:
 
@@ -386,7 +374,7 @@ Add or update a URL for a `Domain`:
 	final DomainsApi domainsApi = new DomainsApi("websites");
 	domainsApi.crawlUrl("generated_id", "https://swiftype.com/new/path/about.html");
 
-## Analytics
+### Analytics
 
 To get the amount of searches on your `Engine` in the last 14 days use:
 
@@ -440,3 +428,30 @@ You can also specifiy a date range for no result queries:
 	final Date from = ...
 	final Date to = ...
 	final List<QueryCount> topNoResultQueries = analyticsApi.topNoResultQueries(from, to);
+
+## FAQ 🔮
+
+### Where do I report issues with the client?
+
+If something is not working as expected, please open an [issue](https://github.com/swiftype/swiftype-java/issues/new).
+
+### Where can I learn more about App Search?
+
+Your best bet is to read the [documentation](https://swiftype.com/documentation/app-search).
+
+### Where else can I go to get help?
+
+You can checkout the [Elastic Site Search community discuss forums](https://discuss.elastic.co/c/site-search).
+
+## Contribute 🚀
+
+We welcome contributors to the project. Before you begin, a couple notes...
+
++ Before opening a pull request, please create an issue to [discuss the scope of your proposal](https://github.com/swiftype/swiftype-java/issues).
++ Please write simple code and concise documentation, when appropriate.
+
+## License 📗
+
+[MIT](https://github.com/swiftype/swiftype-java/blob/master/LICENSE) © [Elastic](https://github.com/elastic)
+
+Thank you to all the [contributors](https://github.com/swiftype/swiftype-java/graphs/contributors)!
