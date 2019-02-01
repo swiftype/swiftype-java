@@ -14,7 +14,7 @@
 
 ## Getting started 🐣
 
-1. Create an account at [Swiftype](https://swiftype.com/) and get your API key from your [Account Settings](https://swiftype.com/user/edit).
+1. Create a [Site Search](https://app.swiftype.com/signup) account and get your API key from your [Account Settings](https://swiftype.com/user/edit).
 
 2. Configure your client:
 
