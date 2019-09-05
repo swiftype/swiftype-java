@@ -1,5 +1,10 @@
 <p align="center"><img src="https://github.com/swiftype/swiftype-java/blob/master/logo-site-search.png?raw=true" alt="Elastic Site Search Logo"></p>
 
+> **⚠️ This repository is deprecated ⚠️**
+>
+> **We are no longer maintaining a Java API Client for our Site Search API. Thank you! - Elastic**
+
+
 > A first-party Java client for the [Elastic Site Search API](https://swiftype.com/documentation/site-search/overview).
 
 ## Contents
